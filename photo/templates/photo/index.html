@@ -1,0 +1,154 @@
+{% load custom_filters %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Manager</title>
+    <!-- Подключение Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'urp/css/style.css' %}"> 
+</head>
+
+<body class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Кнопка "Назад" с иконкой -->
+        {% if current_directory %}
+            <a href="?directory={{ current_directory|parent_directory|urlencode }}" class="btn d-flex align-items-center">
+                <img src="{% static 'icons/arrow-left.png' %}" alt="Назад" style="width: 40px; height: 40px; margin-right: 5px;">
+            </a>
+        {% endif %}
+
+        <!-- Заголовок -->
+        <h1 class="text-center flex-grow-1 m-0">Фотографии</h1>
+    </div>
+
+    
+
+    {% if not current_directory %}
+        <!-- Форма для создания новой папки -->
+        <form action="{% url 'photo:create_directory' %}" method="POST" class="mb-4">
+            {% csrf_token %}
+            <input type="hidden" name="current_directory" value="{{ current_directory }}">
+            <div class="input-group has-validation">
+                <input type="text" id="new_directory" name="directory_name" class="form-control" placeholder="Введите название новой папки" oninput="toggleCreateButton()" required>
+                <button type="submit" id="createButton" class="btn btn-secondary btn-create" disabled>Создать папку</button>
+            </div>
+            
+        </form>
+    {% endif %}
+
+    <!-- Список папок -->
+    {% if not current_directory %}
+        <h2 class="mb-3">Папки</h2>
+    {% endif %}
+
+    <ul class="list-group mb-4">
+        {% for directory in directories %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <!-- Название папки -->
+                <a href="?directory={{ current_directory|default:'' }}/{{ directory.name|urlencode }}">{{ directory.name }}</a>
+                
+                <!-- Дата создания и кнопки управления -->
+                <div class="d-flex align-items-center">
+                    <small class="text-muted me-3">{{ directory.creation_date }}</small>
+                    
+                    <!-- Иконка "Редактировать" -->
+                    <button class="btn btn-sm btn-warning me-2" onclick="editFolder('{{ directory.name }}')" style="border: none; background: none; padding: 0;">
+                        <img src="{% static "icons/edit.png" %}" alt="Редактировать" style="width: 20px; height: 20px;">
+                    </button>
+                    
+                    
+                    <!-- Иконка "Удалить" -->
+                    <form action="{% url 'photo:delete_directory' directory.name %}" method="POST" onsubmit="return confirm('Удалить папку {{ directory.name }}?');" style="margin: 0; padding: 0;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger" style="border: none; background: none; padding: 0;">
+                            <img src="{% static "icons/delete.png" %}" alt="Удалить" style="width: 20px; height: 20px;">
+                        </button>
+                    </form>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    
+
+    <!-- Показываем только внутри папки -->
+    {% if current_directory %}
+        <!-- Форма для загрузки фотографий -->
+        <h2 class="mb-3">Загрузить фотографии</h2>
+        <form action="{% url 'photo:upload_photo' current_directory|default:'root' %}" method="POST" enctype="multipart/form-data" class="mb-4">
+            {% csrf_token %}
+            <div class="upload-container">
+                <input type="file" id="photos" name="photos" class="form-control" accept="image/*" multiple required onchange="toggleUploadButton(this)">
+                <button type="submit" id="uploadButton" class="btn btn-secondary" disabled>Загрузить</button>
+            </div>
+        </form>
+
+        <!-- Список фотографий -->
+        <h2 class="mb-3">Фотографии</h2>
+        <div class="row g-3">
+            {% for photo in photos %}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="photo-card">
+                        <!-- Превью изображения -->
+                        <img 
+                            src="{{ MEDIA_URL }}{{ current_directory|default:'' }}/{{ photo|urlencode }}" 
+                            alt="{{ photo }}" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#photoCarouselModal" 
+                            onclick="showPhotoCarousel({{ forloop.counter0 }})">
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Модальное окно с каруселью -->
+        <div class="modal fade" id="photoCarouselModal" tabindex="-1" aria-labelledby="photoCarouselLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="photoCarouselLabel">Просмотр фотографий</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="photoCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for photo in photos %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <img 
+                                            src="{{ MEDIA_URL }}{{ current_directory|default:'' }}/{{ photo|urlencode }}" 
+                                            class="d-block w-100" 
+                                            alt="{{ photo }}" 
+                                            style="max-height: 80vh; object-fit: contain;">
+                                        <div class="carousel-caption d-none d-md-block">
+                                            <p class="text-muted">{{ photo }}</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#photoCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Предыдущая</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#photoCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Следующая</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+
+    {% endif %}
+
+    <!-- Подключение Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'urp/js/script.js' %}"></script>
+
+
+</body>
+</html>

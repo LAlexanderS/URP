@@ -1,0 +1,67 @@
+.photo-card {
+    width: 100%;
+    height: 200px; /* Фиксированная высота для всех карточек */
+    border: 2px solid #ccc; /* Рамка для фотографий */
+    border-radius: 5px; /* Закруглённые углы */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Тень для фотографий */
+    padding: 5px;
+    background: #fff; /* Фон */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Равномерное распределение содержимого */
+}
+
+.photo-card img {
+    width: 100%; /* Занимает всю ширину родителя */
+    height: 190px; /* Фиксированная высота для изображений */
+    object-fit: cover; /* Кадрирование изображения, чтобы оно заполнило контейнер */
+    border-radius: 5px;
+}
+
+.photo-card p {
+    text-align: center;
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: #555;
+    flex-shrink: 0; /* Описание не раздувает карточку */
+}
+
+.upload-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.upload-container .btn {
+    flex-shrink: 0;
+}
+
+.input-group {
+    border: 2px solid #007bff; /* Синяя обводка */
+    border-radius: 5px; /* Закруглённые углы */
+    padding: 5px; /* Внутренние отступы */
+}
+.input-group:focus-within {
+    border-color: #28a745; /* Зелёная обводка при фокусе */
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5); /* Тень при фокусе */
+}
+.btn-create {
+    border: 2px solid transparent; /* Стандартная кнопка без обводки */
+    border-radius: 5px; /* Закруглённые углы */
+}
+.btn-create:focus {
+    border-color: #28a745; /* Зелёная обводка при фокусе */
+    outline: none; /* Убираем стандартный фокус */
+}
+
+
+/* Убираем горизонтальное смещение */
+body.modal-open {
+    padding-right: 0 !important;
+}
+
+/* Обеспечиваем центрирование изображения */
+.carousel-item img {
+    max-height: 80vh;
+    object-fit: contain;
+    margin: auto;
+}
