@@ -1,4 +1,5 @@
 from django import template
+import os
 
 register = template.Library()
 
@@ -15,3 +16,8 @@ def parent_directory(path):
     if '/' not in path:
         return ''
     return '/'.join(path.split('/')[:-1])
+
+@register.filter
+def dirname(path):
+    """Возвращает имя родительской директории."""
+    return os.path.dirname(path)

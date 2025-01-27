@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 import os
 from django.conf import settings
 from urllib.parse import unquote
+from django.contrib.auth.decorators import login_required
 
 MEDIA_ROOT = settings.MEDIA_ROOT
 
@@ -54,7 +55,7 @@ def index(request):
     })
 
 
-
+@login_required
 @csrf_exempt
 def create_directory(request):
     if request.method == 'POST':
@@ -71,7 +72,7 @@ def create_directory(request):
 
         return redirect(f"{reverse('photo:index')}?directory={current_directory}")
 
-
+@login_required
 @csrf_exempt
 def delete_directory(request, directory):
     if request.method == 'POST':
@@ -87,6 +88,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+@login_required
 @csrf_exempt
 def upload_photo(request, directory):
     if directory == 'root':
@@ -109,6 +111,7 @@ def upload_photo(request, directory):
 
         return redirect(f"{reverse('photo:index')}?directory={directory}")
 
+@login_required
 @csrf_exempt
 def edit_directory(request, directory):
     if request.method == 'POST':
