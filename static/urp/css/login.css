@@ -1,0 +1,40 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f8f9fa;
+}
+
+.container {
+    background: white;
+    padding: 30px;
+    padding-bottom: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 380px;
+}
+
+.btn-primary {
+    background-color: #0088BB;
+    /* Корпоративный цвет */
+    border-radius: 50px;
+    max-width: 150px;
+    align-items: center;
+
+}
+
+.btn-primary:hover {
+    background-color: #0077A3;
+    /* Немного темнее при наведении */
+}
+
+.container {
+    background-color: rgb(162, 162, 197);
+}
+
+.form-control {
+    border-radius: 50px;
+}

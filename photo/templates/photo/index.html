@@ -136,7 +136,9 @@
                                             class="d-block w-100" 
                                             alt="{{ photo }}" 
                                             style="max-height: 80vh; object-fit: contain;">
-                                        
+                                        <div class="carousel-caption d-none d-md-block">
+                                            <p class="text-muted">{{ photo }}</p>
+                                        </div>
                                     </div>
                                 {% endfor %}
                             </div>

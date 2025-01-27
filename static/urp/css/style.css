@@ -111,17 +111,6 @@ body.modal-open {
     /* Устанавливаем подходящий режим отображения */
 }
 
-/* Настройка заголовка и текста */
-.modal-header,
-.carousel-caption {
-    z-index: 10;
-    /* Поверх содержимого */
-    background: rgba(255, 255, 255, 0.8);
-    /* Полупрозрачный фон */
-    padding: 10px;
-    border-radius: 5px;
-}
-
 /* Центрирование кнопок управления */
 .carousel-control-prev,
 .carousel-control-next {
