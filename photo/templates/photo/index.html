@@ -11,17 +11,21 @@
     <link rel="stylesheet" href="{% static 'urp/css/style.css' %}"> 
 </head>
 
-<body class="container my-4">
+<body class="container-fluid my-4">
     {% if not current_directory %}
         <div class="position-relative mb-4">
             <!-- Заголовок -->
-            <h1 class="text-center">Фотографии</h1>
+            <h1 class="Name-page text-center">Наши фотографии</h1>
 
             <!-- Блок с кнопкой "Войти" или "Выйти" -->
             {% if user.is_authenticated %}
-                <a href="{% url 'photo:logout' %}" class="btn btn-danger position-absolute top-0 end-0">Выйти</a>
+                <a href="{% url 'photo:logout' %}" class="btn position-absolute top-0 end-0">
+                    <img src="{% static 'icons/logout.png' %}" alt="Выйти" style="width: 30px; height: 30px; margin-right: 8px;">
+                    </a>
             {% else %}
-                <a href="{% url 'photo:login' %}" class="btn btn-primary position-absolute top-0 end-0">Войти</a>
+                <a href="{% url 'photo:login' %}" class="position-absolute top-0 end-0">
+                    <img src="{% static 'icons/login.png' %}" alt="Войти" style="width: 30px; height: 30px; margin-right: 8px;">
+                    </a>
             {% endif %}
         </div>
     {% endif %}
@@ -53,7 +57,7 @@
 
     <!-- Список папок -->
     {% if not current_directory %}
-        <h2 class="mb-3">Папки</h2>
+        <h2 class="mb-3">События</h2>
     {% endif %}
 
     <ul class="list-group mb-4">
@@ -63,8 +67,8 @@
                 <a href="?directory={{ current_directory|default:'' }}/{{ directory.name|urlencode }}">{{ directory.name }}</a>
                 
                 <!-- Дата создания и кнопки управления -->
-                <div class="d-flex align-items-center">
-                    <small class="text-muted me-3">{{ directory.creation_date }}</small>
+                <div class="date d-flex align-items-center">
+                    <small class="me-3">{{ directory.creation_date }}</small>
                     
                     {% if user.is_authenticated %}
                         <!-- Иконка "Редактировать" -->
@@ -90,7 +94,7 @@
     {% if current_directory %}
         <!-- Форма для загрузки фотографий -->
         {% if user.is_authenticated %}
-            <h2 class="mb-3">Загрузить фотографии</h2>
+            <h2 class="mb-3 text-center">Загрузить фотографии</h2>
             <form action="{% url 'photo:upload_photo' current_directory|default:'root' %}" method="POST" enctype="multipart/form-data" class="mb-4">
                 {% csrf_token %}
                 <div class="upload-container">
@@ -101,10 +105,10 @@
         {% endif %}
 
         <!-- Список фотографий -->
-        <h2 class="mb-3">Фотографии</h2>
+        <h2 class="mb-3 text-center">{{ current_directory }} </h2>
         <div class="row g-3">
             {% for photo in photos %}
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
                     <div class="photo-card">
                         <!-- Превью изображения -->
                         <img 
