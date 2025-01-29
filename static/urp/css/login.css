@@ -67,14 +67,6 @@ label.form-label,
 }
 
 .container {
-    /* background: rgb(170, 173, 177);
-    background: linear-gradient(17deg, rgba(170, 173, 177, 1) 0%, rgba(123, 145, 168, 1) 31%, rgba(75, 94, 111, 1) 94%); */
-    /* background: rgb(100, 120, 141);
-    background: linear-gradient(45deg, rgba(100, 120, 141, 1) 17%, rgba(57, 73, 88, 1) 75%, rgba(63, 79, 95, 1) 100%); */
-    /* background: rgb(100, 120, 141);
-    background: linear-gradient(45deg, rgba(100, 120, 141, 1) 17%, rgba(57, 73, 88, 1) 100%, rgba(63, 79, 95, 1) 100%); */
-    /* background: rgb(100, 120, 141);
-    background: linear-gradient(45deg, rgba(100, 120, 141, 1) 6%, rgba(77, 98, 116, 1) 82%, rgba(82, 106, 126, 1) 100%); */
     background: rgb(100, 120, 141);
     background: linear-gradient(45deg, rgba(100, 120, 141, 1) 9%, rgba(88, 109, 131, 1) 42%, rgba(75, 94, 110, 1) 71%, rgba(66, 87, 104, 1) 96%);
 }

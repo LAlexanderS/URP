@@ -14,9 +14,6 @@
     <div class="container">
         <h2 class="mb-4 text-center">Вход</h2>
     
-        <!-- Место для сообщений -->
-        <div id="messageArea" class="alert alert-info" style="display: none;"></div>
-    
         <form method="post" action="">
             {% csrf_token %}
             <div class="mb-3">
@@ -30,11 +27,14 @@
             <div class="text-center">
                 <button type="submit" class="btn w-100">Войти</button>
             </div>
-
-            <div class="text-center start-page">
-                <a href={% url "photo:index" %} class="text-center">На главную</a>
-            </div> 
         </form>
+
+        <div class="text-center start-page mt-2">
+            <a href={% url "photo:index" %} class="text-center">На главную</a>
+        </div> 
+
     </div>
+
+    
 </body>
 </html>
