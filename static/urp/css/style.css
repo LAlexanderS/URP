@@ -131,6 +131,28 @@ body.modal-open {
     transform: translateY(-50%);
 }
 
+
+/* Стрелки в карусели цветом #010917 */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: brightness(0) saturate(100%) invert(5%) sepia(32%) saturate(1630%) hue-rotate(185deg) brightness(94%) contrast(104%);
+}
+
+/* фон кнопок */
+.carousel-control-prev,
+.carousel-control-next {
+    background: rgba(1, 9, 23, 0.2);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background: rgba(1, 9, 23, 0.5);
+}
+
+
 .list-group-item {
     background-color: #bac0c8;
 }
