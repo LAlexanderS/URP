@@ -8,27 +8,25 @@ from django.conf import settings
 from urllib.parse import unquote
 from django.contrib.auth.decorators import login_required
 from urllib.parse import unquote
+from datetime import datetime
+from django.conf import settings
+import shutil
+from django.http import JsonResponse
+import logging
+import json
 
 MEDIA_ROOT = settings.MEDIA_ROOT
 
-from datetime import datetime
-
-from django.conf import settings
-
 def index(request):
-    # Получаем текущую директорию из GET-параметров
-    current_directory = request.GET.get('directory', '').lstrip('/')  # Убираем начальный слеш, если есть
+    current_directory = request.GET.get('directory', '').lstrip('/')
     current_directory_path = os.path.normpath(os.path.join(MEDIA_ROOT, current_directory))
-
-    # Убедимся, что текущая директория находится внутри MEDIA_ROOT
+    # директория внутри MEDIA_ROOT
     if not current_directory_path.startswith(MEDIA_ROOT):
         return HttpResponse("Invalid directory path", status=400)
-
-    # Проверяем, что директория существует
+    # существует
     if not os.path.exists(current_directory_path):
         os.makedirs(current_directory_path)
-
-    # Получаем список директорий и их дату создания
+    # список директорий и их дата
     directories = [
         {
             'name': d,
@@ -39,7 +37,7 @@ def index(request):
         if os.path.isdir(os.path.join(current_directory_path, d))
     ]
 
-    # Сортируем папки по дате создания в обратном порядке (сначала новые)
+    # Сортируем папок (сначала новые)
     directories = sorted(directories, key=lambda x: x['creation_time'], reverse=True)
 
     photos = [
@@ -47,14 +45,12 @@ def index(request):
         if os.path.isfile(os.path.join(current_directory_path, f))
     ]
 
-    # Передаём MEDIA_URL в шаблон
     return render(request, 'photo/index.html', {
-        'current_directory': current_directory,  # Отправляем относительный путь
+        'current_directory': current_directory, 
         'directories': directories,
         'photos': photos,
-        'MEDIA_URL': settings.MEDIA_URL,  # Передаём MEDIA_URL
+        'MEDIA_URL': settings.MEDIA_URL,
     })
-
 
 @login_required
 @csrf_exempt
@@ -63,10 +59,8 @@ def create_directory(request):
         current_directory = request.POST.get('current_directory', '').lstrip('/')
         directory_name = request.POST.get('directory_name')
         
-        # Формируем путь для новой папки внутри текущей директории
+        # путь для новой папки
         new_dir_path = os.path.normpath(os.path.join(MEDIA_ROOT, current_directory, directory_name))
-
-        # Проверка на попытку выхода за пределы MEDIA_ROOT
         if not new_dir_path.startswith(MEDIA_ROOT):
             return HttpResponse("Invalid directory path", status=400)
 
@@ -75,14 +69,9 @@ def create_directory(request):
 
         return redirect(f"{reverse('photo:index')}?directory={current_directory}")
 
-
-import shutil
-from django.http import JsonResponse
-
 @login_required
 @csrf_exempt
 def delete_directory(request, directory):
-    """Удаляет папку вместе со всеми вложенными файлами и папками через AJAX"""
     if request.method == 'POST':
         directory = unquote(directory).strip('/')
         dir_path = os.path.normpath(os.path.join(MEDIA_ROOT, directory))
@@ -91,15 +80,9 @@ def delete_directory(request, directory):
             return JsonResponse({"error": "Ошибка: путь выходит за пределы MEDIA_ROOT"}, status=400)
 
         if os.path.exists(dir_path) and os.path.isdir(dir_path):
-            shutil.rmtree(dir_path)  # ✅ Удаляем всю папку со всеми файлами и вложенными папками
+            shutil.rmtree(dir_path)
 
-        return JsonResponse({"success": True})  # Отправляем успешный ответ без редиректа
-
-
-
-
-    
-import logging
+        return JsonResponse({"success": True})
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +91,7 @@ logger = logging.getLogger(__name__)
 def upload_photo(request, directory):
     directory = unquote(directory)  # Декодируем путь
     if directory == 'root':
-        directory = ''  # Корневая директория
+        directory = ''
 
     if request.method == 'POST' and request.FILES.getlist('photos'):
         current_directory = directory.lstrip('/')
@@ -126,26 +109,38 @@ def upload_photo(request, directory):
 
         return redirect(f"{reverse('photo:index')}?directory={directory}")
 
+
 @login_required
 @csrf_exempt
-def edit_directory(request, directory):
-    """Переименовывает вложенную папку"""
-    if request.method == 'POST':
-        directory = unquote(directory).lstrip('/')
-        current_directory = os.path.dirname(directory)
-        new_name = request.POST.get('new_name').strip()
+def edit_directory(request, current_directory, directory):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            new_name = data.get("new_name", "").strip()
 
-        current_path = os.path.normpath(os.path.join(MEDIA_ROOT, directory))
-        new_path = os.path.normpath(os.path.join(MEDIA_ROOT, current_directory, new_name))
+            if not new_name:
+                return JsonResponse({"error": "Новое имя не может быть пустым"}, status=400)
 
-        # Проверяем безопасность пути
-        if not current_path.startswith(MEDIA_ROOT) or not new_path.startswith(MEDIA_ROOT):
-            return HttpResponse("Ошибка: путь выходит за пределы MEDIA_ROOT", status=400)
+            current_directory = unquote(current_directory).strip("/")
+            directory = unquote(directory).strip("/")
 
-        if os.path.exists(current_path) and not os.path.exists(new_path):
+            current_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, current_directory, directory))
+            new_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, current_directory, new_name))
+
+            if not current_path.startswith(settings.MEDIA_ROOT) or not new_path.startswith(settings.MEDIA_ROOT):
+                return JsonResponse({"error": "Некорректный путь"}, status=400)
+
+            if not os.path.exists(current_path):
+                return JsonResponse({"error": "Исходная папка не найдена"}, status=404)
+
+            if os.path.exists(new_path):
+                return JsonResponse({"error": "Папка с таким именем уже существует"}, status=400)
+
             os.rename(current_path, new_path)
 
-        return redirect(f"{reverse('photo:index')}?directory={current_directory}")
+            return JsonResponse({"success": True, "new_name": new_name})
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Ошибка обработки запроса"}, status=400)
 
 
 

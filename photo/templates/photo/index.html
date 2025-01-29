@@ -6,8 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photo Manager</title>
-    <!-- Подключение Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}"> 
     <link rel="stylesheet" href="{% static 'urp/css/style.css' %}"> 
 </head>
 
@@ -30,19 +29,39 @@
         </div>
     {% endif %}
     
-    <!-- 1. Кнопка "Назад" -->
-    {% if current_directory %}
-        <div class="mb-4">
-            <a href="?directory={{ current_directory|default:''|dirname|urlencode }}" 
-               class="btn btn-light">
-                <img src="{% static 'icons/arrow-left.png' %}" alt="Назад" 
-                     style="width: 20px; height: 20px; margin-right: 8px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <!-- Кнопка "Назад" -->
+        {% if current_directory %}
+            <a href="?directory={{ current_directory|default:''|dirname|urlencode }}" class="btn btn-light">
+                <img src="{% static 'icons/arrow-left.png' %}" alt="Назад" style="width: 20px; height: 20px; margin-right: 8px;">
                 Назад
             </a>
-        </div>
-    {% endif %}
 
-    <!-- 2. Форма для создания новой папки -->
+            <!-- Иконки справа -->
+            <div class="d-flex align-items-center">
+                <!-- "Домой" -->
+                <a href="{% url 'photo:index' %}" class="btn btn-light">
+                    <img src="{% static 'icons/home.png' %}" alt="Домой" style="width: 30px; height: 30px;">
+                </a>
+        
+                <!-- Войти / Выйти -->
+                {% if user.is_authenticated %}
+                    <a href="{% url 'photo:logout' %}" class="btn">
+                        <img src="{% static 'icons/logout.png' %}" alt="Выйти" style="width: 30px; height: 30px;">
+                    </a>
+                {% else %}
+                    <a href="{% url 'photo:login' %}" class="btn">
+                        <img src="{% static 'icons/login.png' %}" alt="Войти" style="width: 30px; height: 30px;">
+                    </a>
+                {% endif %}
+            </div>
+
+        {% endif %}
+    
+        
+    </div>
+
+    <!-- Форма для создания новой папки -->
     {% if user.is_authenticated %}
         <form action="{% url 'photo:create_directory' %}" method="POST" class="mb-4">
             {% csrf_token %}
@@ -56,26 +75,25 @@
     
     {% endif %}
 
-    <!-- 3. Форма загрузки фотографий -->
+    <!-- Форма загрузки фотографий -->
     {% if user.is_authenticated %}
-        {% comment %} <h2 class="mb-3 text-end">Загрузить фотографии</h2> {% endcomment %}
         <form action="{% url 'photo:upload_photo' current_directory|default:'root'|urlencode %}" method="POST" enctype="multipart/form-data" class="mb-4">
             {% csrf_token %}
             <div class="upload-container">
                 <input type="file" id="photos" name="photos" class="form-control" accept="image/*" multiple required onchange="toggleUploadButton(this)">
-                <button type="submit" id="uploadButton" class="btn btn-secondary" disabled>Загрузить</button>
+                <button type="submit" id="uploadButton" class="btn btn-secondary btn-load" disabled>Загрузить</button>
             </div>
         </form>
     {% endif %}
 
-    <!-- 4. Название текущей директории -->
+    <!-- Название текущей директории -->
     {% if current_directory %}
         <h2 class="mb-3 text-center">{{ current_directory }}</h2>
-    {% else %}
-        <h2 class="mb-3">События</h2>
+    {% comment %} {% else %}
+        <h2 class="mb-3 mx-4">События</h2> {% endcomment %}
     {% endif %}
 
-    <!-- 5. Вложенные директории -->
+    <!-- Вложенные директории -->
     <ul class="list-group mb-4">
         {% for directory in directories %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -87,14 +105,15 @@
                     <small class="me-3">{{ directory.creation_date }}</small>
 
                     {% if user.is_authenticated %}
-                        <!-- Иконка "Редактировать" -->
+                        <!--"Редактировать" -->
                         <button class="btn btn-sm btn-warning me-2"
-                                onclick="editFolder('{{ current_directory|default:'' }}/{{ directory.name }}')"
-                                style="border: none; background: none; padding: 0;">
+                            onclick="editFolder('{{ current_directory|default:'' }}/{{ directory.name }}', this)"
+                            style="border: none; background: none; padding: 0;">
                             <img src="{% static 'icons/edit.png' %}" alt="Редактировать" style="width: 20px; height: 20px;">
                         </button>
 
-                        <!-- Иконка "Удалить" -->
+
+                        <!--"Удалить" -->
                         <form onsubmit="event.preventDefault(); deleteFolder('{{ current_directory|default:'' }}/{{ directory.name }}', this)">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-danger" style="border: none; background: none; padding: 0;">
@@ -106,11 +125,9 @@
                 </div>
             </li>
         {% endfor %}
-
-
     </ul>
 
-    <!-- 6. Фотографии -->
+    <!-- Фотографии -->
     <div class="row g-3">
         {% for photo in photos %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
@@ -165,8 +182,7 @@
         </div>
     </div>
 
-    <!-- Подключение Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'urp/js/script.js' %}"></script>
 
 </body>

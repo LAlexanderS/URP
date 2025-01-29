@@ -7,12 +7,9 @@ register = template.Library()
 def get(dictionary, key):
     return dictionary.get(key)
 
-
 @register.filter
 def parent_directory(path):
-    """
-    Возвращает родительский путь директории.
-    """
+    """Возвращает родительский путь директории."""
     if '/' not in path:
         return ''
     return '/'.join(path.split('/')[:-1])

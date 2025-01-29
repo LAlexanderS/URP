@@ -1,0 +1,188 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('/static/fonts/Poppins/Poppins-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('/static/fonts/Poppins/Poppins-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+
+body {
+    background: url("/static/background/background3.jpg") no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+
+.Name-page {
+    font-weight: 700;
+    color: #010917;
+}
+
+h2.mb-3.text-center,
+h2.mb-3 {
+    font-weight: 700;
+}
+
+/* h2.mb-3 {
+    color: black;
+} */
+
+.photo-card {
+    width: 100%;
+    height: 200px;
+    /* Фиксированная высота для всех карточек */
+    border: 2px solid #ccc;
+    /* Рамка для фотографий */
+    border-radius: 5px;
+    /* Закруглённые углы */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Тень для фотографий */
+    padding: 5px;
+    background: #fff;
+    /* Фон */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* Равномерное распределение содержимого */
+}
+
+.photo-card img {
+    width: 100%;
+    /* Занимает всю ширину родителя */
+    height: 190px;
+    /* Фиксированная высота для изображений */
+    object-fit: cover;
+    /* Кадрирование изображения, чтобы оно заполнило контейнер */
+    border-radius: 5px;
+}
+
+.photo-card p {
+    text-align: center;
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: #555;
+    flex-shrink: 0;
+    /* Описание не раздувает карточку */
+}
+
+.upload-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 2px solid #010917;
+    /* Синяя обводка */
+    border-radius: 5px;
+    /* Закруглённые углы */
+    padding: 5px;
+    /* Внутренние отступы */
+}
+
+.upload-container .btn {
+    flex-shrink: 0;
+}
+
+/* .btn-load {
+    width: 151.1px !important;
+} */
+
+.input-group {
+    border: 2px solid #010917;
+    /* Синяя обводка */
+    border-radius: 5px;
+    /* Закруглённые углы */
+    padding: 5px;
+    /* Внутренние отступы */
+}
+
+.btn-create {
+    border-radius: 5px !important;
+}
+
+.input-group:focus-within {
+    border-color: #3568c1;
+    /* Зелёная обводка при фокусе */
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+    /* Тень при фокусе */
+}
+
+.btn-create {
+    border: 2px solid transparent;
+    /* Стандартная кнопка без обводки */
+    border-radius: 5px;
+    /* Закруглённые углы */
+}
+
+.btn-create:focus {
+    border-color: #28a745;
+    /* Зелёная обводка при фокусе */
+    outline: none;
+    /* Убираем стандартный фокус */
+}
+
+
+/* Убираем горизонтальное смещение */
+body.modal-open {
+    padding-right: 0 !important;
+}
+
+/* Обеспечиваем центрирование изображения */
+.carousel-item img {
+    max-height: 80vh;
+    object-fit: contain;
+    margin: auto;
+}
+
+/* Увеличиваем модальное окно */
+.modal-dialog.modal-lg {
+    max-width: 90%;
+    /* Увеличиваем ширину модального окна */
+    max-height: 90vh;
+    /* Увеличиваем высоту модального окна */
+    margin: 0 auto;
+    /* Центрируем модальное окно */
+}
+
+/* Устанавливаем изображения на максимум доступного пространства */
+.carousel-item img {
+    max-height: 85vh;
+    /* Увеличиваем высоту изображения */
+    width: auto;
+    /* Сохраняем пропорции по ширине */
+    margin: auto;
+    /* Центрируем изображение */
+    object-fit: contain;
+    /* Устанавливаем подходящий режим отображения */
+}
+
+/* Центрирование кнопок управления */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+    /* Уменьшаем кнопки управления */
+    top: 50%;
+    /* Центрируем кнопки вертикально */
+    transform: translateY(-50%);
+}
+
+.list-group-item {
+    background-color: #bac0c8;
+}
+
+.list-group-item>a {
+    color: #010917;
+}
+
+.list-group-item>a:hover {
+    color: #3568c1;
+}
+
+.date>small {
+    color: #010917;
+}

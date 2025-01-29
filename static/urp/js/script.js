@@ -12,20 +12,20 @@ document.querySelectorAll('.photo-card img').forEach((img, index) => {
 function toggleUploadButton(input) {
     const uploadButton = document.getElementById('uploadButton')
     if (input.files.length > 0) {
-        uploadButton.classList.remove('btn-secondary') // Убираем серый цвет
-        uploadButton.classList.add('btn-success') // Добавляем зелёный цвет
-        uploadButton.disabled = false // Делаем кнопку активной
+        uploadButton.classList.remove('btn-secondary')
+        uploadButton.classList.add('btn-success')
+        uploadButton.disabled = false
     } else {
-        uploadButton.classList.remove('btn-success') // Убираем зелёный цвет
-        uploadButton.classList.add('btn-secondary') // Добавляем серый цвет
-        uploadButton.disabled = true // Делаем кнопку неактивной
+        uploadButton.classList.remove('btn-success')
+        uploadButton.classList.add('btn-secondary')
+        uploadButton.disabled = true
     }
 }
 
+/** Функция переключения состояния кнопки "Создать папку" */
 document.addEventListener("DOMContentLoaded", function () {
     console.log("JS загружен!")
 
-    /** Функция переключения состояния кнопки "Создать папку" */
     function toggleCreateButton() {
         const createButton = document.getElementById('createButton')
         const newDirectory = document.getElementById('new_directory')
@@ -61,35 +61,45 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 })
 
+function editFolder(currentName, button) {
+    const folderParts = currentName.split("/")
+    const currentFolderName = folderParts[folderParts.length - 1]  // только имя папки
+    const newName = prompt("Введите новое имя для папки:", currentFolderName)
 
-function editFolder(currentName) {
-    const newName = prompt('Введите новое имя для папки:', currentName)
-
-    // Проверяем, ввел ли пользователь новое имя
-    if (newName && newName.trim() !== currentName.trim()) {
-        // Создаем форму для отправки данных POST-запросом
-        const form = document.createElement('form')
-        form.method = 'POST'
-        form.action = `/edit_directory/${encodeURIComponent(currentName)}/`
-
-        // Добавляем CSRF-токен
-        const csrfInput = document.createElement('input')
-        csrfInput.type = 'hidden'
-        csrfInput.name = 'csrfmiddlewaretoken'
-        csrfInput.value = '{{ csrf_token }}' // Убедитесь, что токен передается корректно в шаблон
-        form.appendChild(csrfInput)
-
-        // Добавляем поле с новым именем
-        const nameInput = document.createElement('input')
-        nameInput.type = 'hidden'
-        nameInput.name = 'new_name'
-        nameInput.value = newName.trim()
-        form.appendChild(nameInput)
-
-        // Добавляем форму на страницу и отправляем
-        document.body.appendChild(form)
-        form.submit()
+    if (!newName || newName.trim() === "") {
+        alert("Ошибка: Название папки не может быть пустым!")
+        return
     }
+
+    const currentDirectory = new URLSearchParams(window.location.search).get("directory") || ""
+
+    fetch(`/edit_directory/${encodeURIComponent(currentDirectory)}/${encodeURIComponent(currentFolderName)}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCSRFToken(),
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ new_name: newName.trim() })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.closest("li").querySelector("a").textContent = newName
+                alert("Папка успешно переименована!")
+                location.reload()
+            } else {
+                alert("Ошибка: " + data.error)
+            }
+        })
+        .catch(error => console.error("Ошибка:", error))
+}
+
+function getCSRFToken() {
+    return document.querySelector("[name=csrfmiddlewaretoken]").value
+}
+
+function getCSRFToken() {
+    return document.querySelector("[name=csrfmiddlewaretoken]").value
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -108,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            this.closest("li").remove() // Удаляем элемент списка без перезагрузки
+                            this.closest("li").remove()
                         } else {
                             alert("Ошибка при удалении")
                         }
@@ -127,14 +137,14 @@ function deleteFolder(directoryName, button) {
     fetch(`/delete_directory/${encodeURIComponent(directoryName)}/`, {
         method: 'POST',
         headers: {
-            'X-CSRFToken': getCSRFToken(),  // Получаем CSRF-токен
+            'X-CSRFToken': getCSRFToken(),
             'Content-Type': 'application/json'
         }
     })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                button.closest("li").remove()  // Удаляем элемент из списка
+                button.closest("li").remove()
             } else {
                 alert("Ошибка удаления папки")
             }
