@@ -20,13 +20,16 @@ MEDIA_ROOT = settings.MEDIA_ROOT
 def index(request):
     current_directory = request.GET.get('directory', '').lstrip('/')
     current_directory_path = os.path.normpath(os.path.join(MEDIA_ROOT, current_directory))
-    # директория внутри MEDIA_ROOT
+
+    # Проверка безопасности пути
     if not current_directory_path.startswith(MEDIA_ROOT):
         return HttpResponse("Invalid directory path", status=400)
-    # существует
+
+    # Создание директории, если её нет
     if not os.path.exists(current_directory_path):
         os.makedirs(current_directory_path)
-    # список директорий и их дата
+
+    # Получаем список директорий
     directories = [
         {
             'name': d,
@@ -37,18 +40,30 @@ def index(request):
         if os.path.isdir(os.path.join(current_directory_path, d))
     ]
 
-    # Сортируем папок (сначала новые)
+    # Сортируем папки по дате создания (от новых к старым)
     directories = sorted(directories, key=lambda x: x['creation_time'], reverse=True)
 
-    photos = [
-        f for f in os.listdir(current_directory_path)
-        if os.path.isfile(os.path.join(current_directory_path, f))
-    ]
+    # Разделяем фото и видео
+    image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'}
+    video_extensions = {'.mp4', '.webm', '.mov', '.avi', '.mkv'}
+
+    photos = []
+    videos = []
+
+    for file in os.listdir(current_directory_path):
+        file_path = os.path.join(current_directory_path, file)
+        if os.path.isfile(file_path):
+            ext = os.path.splitext(file)[1].lower()
+            if ext in image_extensions:
+                photos.append(file)
+            elif ext in video_extensions:
+                videos.append(file)
 
     return render(request, 'photo/index.html', {
-        'current_directory': current_directory, 
+        'current_directory': current_directory,
         'directories': directories,
         'photos': photos,
+        'videos': videos,  # Передаем видео отдельно
         'MEDIA_URL': settings.MEDIA_URL,
     })
 
