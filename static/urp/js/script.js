@@ -155,3 +155,32 @@ function deleteFolder(directoryName, button) {
 function getCSRFToken() {
     return document.querySelector('[name=csrfmiddlewaretoken]').value
 }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-photo-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            let photoPath = this.getAttribute("data-photo")
+            let csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value
+
+            if (confirm("Вы уверены, что хотите удалить это фото?")) {
+                fetch(`/delete_photo/${photoPath}/`, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrfToken
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload()  // Перезагрузить страницу после удаления
+                        } else {
+                            alert("Ошибка: " + data.error)
+                        }
+                    })
+                    .catch(error => console.error("Ошибка:", error))
+            }
+        })
+    })
+});
+

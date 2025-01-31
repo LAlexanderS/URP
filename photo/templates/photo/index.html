@@ -55,10 +55,7 @@
                     </a>
                 {% endif %}
             </div>
-
         {% endif %}
-    
-        
     </div>
 
     <!-- Форма для создания новой папки -->
@@ -131,7 +128,7 @@
     <div class="row g-3">
         {% for photo in photos %}
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
-                <div class="photo-card">
+                <div class="photo-card position-relative">
                     <!-- Фото превью -->
                     <img src="{{ MEDIA_URL }}{{ current_directory|default:'' }}/{{ photo|urlencode }}" 
                          class="d-block w-100" 
@@ -140,6 +137,14 @@
                          data-bs-toggle="modal" 
                          data-bs-target="#photoCarouselModal"
                          onclick="showPhotoCarousel({{ forloop.counter0 }})">
+
+
+                    {% if user.is_authenticated %}
+                        <button class="btn btn-danger btn-sm delete-photo-btn position-absolute top-0 end-0"
+                                data-photo="{{ current_directory|default:'' }}/{{ photo|urlencode }}">
+                            ✖
+                        </button>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
@@ -156,6 +161,8 @@
                         <source src="{{ MEDIA_URL }}{{ current_directory|default:'' }}/{{ video|urlencode }}" type="video/mp4">
                         Ваш браузер не поддерживает видео.
                     </video>
+
+                    
                 </div>
             </div>
         {% endfor %}

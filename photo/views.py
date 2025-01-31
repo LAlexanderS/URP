@@ -157,6 +157,22 @@ def edit_directory(request, current_directory, directory):
         except json.JSONDecodeError:
             return JsonResponse({"error": "Ошибка обработки запроса"}, status=400)
 
+@login_required
+@csrf_exempt
+def delete_photo(request, photo_path):
+    """Удаление фотографии"""
+    photo_path = unquote(photo_path).strip('/')
+    full_photo_path = os.path.normpath(os.path.join(MEDIA_ROOT, photo_path))
+
+    if not full_photo_path.startswith(MEDIA_ROOT):
+        return JsonResponse({"error": "Ошибка: путь выходит за пределы MEDIA_ROOT"}, status=400)
+
+    if os.path.exists(full_photo_path) and os.path.isfile(full_photo_path):
+        os.remove(full_photo_path)
+        return JsonResponse({"success": True})
+    
+    return JsonResponse({"error": "Файл не найден"}, status=404)
+
 
 def custom_404_view(request, exception):
     return render(request, 'error/404.html', status=404)
