@@ -159,18 +159,18 @@ def edit_directory(request, current_directory, directory):
 
 @login_required
 @csrf_exempt
-def delete_photo(request, photo_path):
-    """Удаление фотографии"""
-    photo_path = unquote(photo_path).strip('/')
-    full_photo_path = os.path.normpath(os.path.join(MEDIA_ROOT, photo_path))
+def delete_media(request, media_path):
+    """Удаление фото или видео"""
+    media_path = unquote(media_path).strip('/')
+    full_media_path = os.path.normpath(os.path.join(MEDIA_ROOT, media_path))
 
-    if not full_photo_path.startswith(MEDIA_ROOT):
+    if not full_media_path.startswith(MEDIA_ROOT):
         return JsonResponse({"error": "Ошибка: путь выходит за пределы MEDIA_ROOT"}, status=400)
 
-    if os.path.exists(full_photo_path) and os.path.isfile(full_photo_path):
-        os.remove(full_photo_path)
+    if os.path.exists(full_media_path) and os.path.isfile(full_media_path):
+        os.remove(full_media_path)
         return JsonResponse({"success": True})
-    
+
     return JsonResponse({"error": "Файл не найден"}, status=404)
 
 

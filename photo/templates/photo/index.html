@@ -127,45 +127,48 @@
     <!-- Фотографии -->
     <div class="row g-3">
         {% for photo in photos %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
-                <div class="photo-card position-relative">
-                    <!-- Фото превью -->
-                    <img src="{{ MEDIA_URL }}{{ current_directory|default:'' }}/{{ photo|urlencode }}" 
-                         class="d-block w-100" 
-                         alt="{{ photo }}" 
-                         style="max-height: 200px; object-fit: cover;" 
-                         data-bs-toggle="modal" 
-                         data-bs-target="#photoCarouselModal"
-                         onclick="showPhotoCarousel({{ forloop.counter0 }})">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
+        <div class="photo-card position-relative">
+            <img src="{{ MEDIA_URL }}{{ current_directory|default:'' }}/{{ photo|urlencode }}" 
+                 class="d-block w-100" 
+                 alt="{{ photo }}" 
+                 style="max-height: 200px; object-fit: cover;" 
+                 data-bs-toggle="modal" 
+                 data-bs-target="#photoCarouselModal"
+                 onclick="showPhotoCarousel({{ forloop.counter0 }})">
 
+            {% if user.is_authenticated %}
+                <button class="btn btn-danger btn-sm delete-media-btn position-absolute top-0 end-0"
+                        data-media="{{ current_directory|default:'' }}/{{ photo|urlencode }}">
+                    ✖
+                </button>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
 
-                    {% if user.is_authenticated %}
-                        <button class="btn btn-danger btn-sm delete-photo-btn position-absolute top-0 end-0"
-                                data-photo="{{ current_directory|default:'' }}/{{ photo|urlencode }}">
-                            ✖
-                        </button>
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
-        
-        {% for video in videos %}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
-                <div class="photo-card">
-                    <!-- Видео превью -->
-                    <video class="d-block w-100" style="max-height: 200px; object-fit: cover;" 
-                           data-bs-toggle="modal" 
-                           data-bs-target="#photoCarouselModal"
-                           onclick="showPhotoCarousel({{ forloop.counter0|add:photos|length }})"
-                           muted>
-                        <source src="{{ MEDIA_URL }}{{ current_directory|default:'' }}/{{ video|urlencode }}" type="video/mp4">
-                        Ваш браузер не поддерживает видео.
-                    </video>
+{% for video in videos %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-2">
+        <div class="photo-card position-relative">
+            <video class="d-block w-100" style="max-height: 200px; object-fit: cover;" 
+                   data-bs-toggle="modal" 
+                   data-bs-target="#photoCarouselModal"
+                   onclick="showPhotoCarousel({{ forloop.counter0|add:photos|length }})"
+                   muted>
+                <source src="{{ MEDIA_URL }}{{ current_directory|default:'' }}/{{ video|urlencode }}" type="video/mp4">
+                Ваш браузер не поддерживает видео.
+            </video>
 
-                    
-                </div>
-            </div>
-        {% endfor %}
+            {% if user.is_authenticated %}
+                <button class="btn btn-danger btn-sm delete-media-btn position-absolute top-0 end-0"
+                        data-media="{{ current_directory|default:'' }}/{{ video|urlencode }}">
+                    ✖
+                </button>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
     </div>
     
     

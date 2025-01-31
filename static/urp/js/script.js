@@ -158,13 +158,13 @@ function getCSRFToken() {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".delete-photo-btn").forEach(button => {
+    document.querySelectorAll(".delete-media-btn").forEach(button => {
         button.addEventListener("click", function () {
-            let photoPath = this.getAttribute("data-photo")
+            let mediaPath = this.getAttribute("data-media")
             let csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value
 
-            if (confirm("Вы уверены, что хотите удалить это фото?")) {
-                fetch(`/delete_photo/${photoPath}/`, {
+            if (confirm("Вы уверены, что хотите удалить этот файл?")) {
+                fetch(`/delete_media/${encodeURIComponent(mediaPath)}/`, {
                     method: "POST",
                     headers: {
                         "X-CSRFToken": csrfToken
@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            location.reload()  // Перезагрузить страницу после удаления
+                            location.reload()  // Перезагрузка страницы после удаления
                         } else {
                             alert("Ошибка: " + data.error)
                         }
@@ -182,5 +182,5 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
     })
-});
+})
 

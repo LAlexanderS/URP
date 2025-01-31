@@ -10,7 +10,9 @@ urlpatterns = [
     path('delete_directory/<path:directory>/', views.delete_directory, name='delete_directory'),
     path('edit_directory/<path:current_directory>/<path:directory>/', views.edit_directory, name='edit_directory'),
     path('upload_photo/<path:directory>/', views.upload_photo, name='upload_photo'),
-    path('delete_photo/<path:photo_path>/', views.delete_photo, name='delete_photo'),
+
+    # Удаление фото и видео
+    path('delete_media/<path:media_path>/', views.delete_media, name='delete_media'),
 
     # Авторизация
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
