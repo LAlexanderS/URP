@@ -54,7 +54,6 @@ label.form-label,
 
 .btn-primary {
     background-color: #0088BB;
-    /* Корпоративный цвет */
     border-radius: 50px;
     max-width: 150px;
     align-items: center;
@@ -63,7 +62,6 @@ label.form-label,
 
 .btn-primary:hover {
     background-color: #0077A3;
-    /* Немного темнее при наведении */
 }
 
 .container {

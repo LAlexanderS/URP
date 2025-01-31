@@ -30,34 +30,22 @@ h2.mb-3 {
     font-weight: 700;
 }
 
-/* h2.mb-3 {
-    color: black;
-} */
-
 .photo-card {
     width: 100%;
     height: 200px;
-    /* Фиксированная высота для всех карточек */
     border: 2px solid #ccc;
-    /* Рамка для фотографий */
     border-radius: 5px;
-    /* Закруглённые углы */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    /* Тень для фотографий */
     padding: 5px;
     background: #fff;
-    /* Фон */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    /* Равномерное распределение содержимого */
 }
 
 .photo-card img {
     width: 100%;
-    /* Занимает всю ширину родителя */
     height: 190px;
-    /* Фиксированная высота для изображений */
     object-fit: cover;
     /* Кадрирование изображения, чтобы оно заполнило контейнер */
     border-radius: 5px;
@@ -77,28 +65,18 @@ h2.mb-3 {
     align-items: center;
     gap: 10px;
     border: 2px solid #010917;
-    /* Синяя обводка */
     border-radius: 5px;
-    /* Закруглённые углы */
     padding: 5px;
-    /* Внутренние отступы */
 }
 
 .upload-container .btn {
     flex-shrink: 0;
 }
 
-/* .btn-load {
-    width: 151.1px !important;
-} */
-
 .input-group {
     border: 2px solid #010917;
-    /* Синяя обводка */
     border-radius: 5px;
-    /* Закруглённые углы */
     padding: 5px;
-    /* Внутренние отступы */
 }
 
 .btn-create {
@@ -107,69 +85,73 @@ h2.mb-3 {
 
 .input-group:focus-within {
     border-color: #3568c1;
-    /* Зелёная обводка при фокусе */
     box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
-    /* Тень при фокусе */
 }
 
 .btn-create {
     border: 2px solid transparent;
-    /* Стандартная кнопка без обводки */
     border-radius: 5px;
-    /* Закруглённые углы */
 }
 
 .btn-create:focus {
     border-color: #28a745;
-    /* Зелёная обводка при фокусе */
     outline: none;
-    /* Убираем стандартный фокус */
 }
 
-
-/* Убираем горизонтальное смещение */
 body.modal-open {
     padding-right: 0 !important;
 }
 
-/* Обеспечиваем центрирование изображения */
 .carousel-item img {
     max-height: 80vh;
     object-fit: contain;
     margin: auto;
 }
 
-/* Увеличиваем модальное окно */
+/* размер модального окна */
 .modal-dialog.modal-lg {
     max-width: 90%;
-    /* Увеличиваем ширину модального окна */
     max-height: 90vh;
-    /* Увеличиваем высоту модального окна */
     margin: 0 auto;
-    /* Центрируем модальное окно */
 }
 
-/* Устанавливаем изображения на максимум доступного пространства */
+/* изображения на максимум доступного пространства */
 .carousel-item img {
     max-height: 85vh;
-    /* Увеличиваем высоту изображения */
     width: auto;
-    /* Сохраняем пропорции по ширине */
     margin: auto;
-    /* Центрируем изображение */
     object-fit: contain;
-    /* Устанавливаем подходящий режим отображения */
 }
 
 /* Центрирование кнопок управления */
 .carousel-control-prev,
 .carousel-control-next {
     width: 5%;
-    /* Уменьшаем кнопки управления */
     top: 50%;
-    /* Центрируем кнопки вертикально */
     transform: translateY(-50%);
 }
+
+
+/* Стрелки в карусели цветом #010917 */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: brightness(0) saturate(100%) invert(5%) sepia(32%) saturate(1630%) hue-rotate(185deg) brightness(94%) contrast(104%);
+}
+
+/* фон кнопок */
+.carousel-control-prev,
+.carousel-control-next {
+    background: rgba(1, 9, 23, 0.2);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background: rgba(1, 9, 23, 0.5);
+}
+
 
 .list-group-item {
     background-color: #bac0c8;

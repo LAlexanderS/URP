@@ -158,6 +158,8 @@ def edit_directory(request, current_directory, directory):
             return JsonResponse({"error": "Ошибка обработки запроса"}, status=400)
 
 
+def custom_404_view(request, exception):
+    return render(request, 'error/404.html', status=404)
 
 
 

@@ -18,7 +18,7 @@
 
             <!-- Блок с кнопкой "Войти" или "Выйти" -->
             {% if user.is_authenticated %}
-                <a href="{% url 'photo:logout' %}" class="btn position-absolute top-0 end-0">
+                <a href="{% url 'photo:logout' %}" class="position-absolute top-0 end-0">
                     <img src="{% static 'icons/logout.png' %}" alt="Выйти" style="width: 30px; height: 30px; margin-right: 8px;">
                     </a>
             {% else %}
@@ -40,7 +40,7 @@
             <!-- Иконки справа -->
             <div class="d-flex align-items-center">
                 <!-- "Домой" -->
-                <a href="{% url 'photo:index' %}" class="btn btn-light">
+                <a href="{% url 'photo:index' %}" class="btn">
                     <img src="{% static 'icons/home.png' %}" alt="Домой" style="width: 30px; height: 30px;">
                 </a>
         
