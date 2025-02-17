@@ -8,7 +8,11 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('create_directory/', views.create_directory, name='create_directory'),
     path('delete_directory/<path:directory>/', views.delete_directory, name='delete_directory'),
+
+    # 🔹 Универсальный маршрут для переименования папки
     path('edit_directory/<path:current_directory>/<path:directory>/', views.edit_directory, name='edit_directory'),
+    path('edit_directory/<path:directory>/', views.edit_directory, name='edit_directory_root'),  # ⬅ Для корневых папок
+
     path('upload_photo/<path:directory>/', views.upload_photo, name='upload_photo'),
 
     # Удаление фото и видео

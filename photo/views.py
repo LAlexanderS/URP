@@ -127,7 +127,8 @@ def upload_photo(request, directory):
 
 @login_required
 @csrf_exempt
-def edit_directory(request, current_directory, directory):
+def edit_directory(request, directory, current_directory=""):
+    """Переименование папки с поддержкой вложенных и корневых директорий"""
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -136,12 +137,15 @@ def edit_directory(request, current_directory, directory):
             if not new_name:
                 return JsonResponse({"error": "Новое имя не может быть пустым"}, status=400)
 
-            current_directory = unquote(current_directory).strip("/")
+            # 🔹 Определяем родительский каталог
+            current_directory = unquote(current_directory or "").strip("/")
             directory = unquote(directory).strip("/")
 
+            # 🛠 Формируем пути
             current_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, current_directory, directory))
             new_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, current_directory, new_name))
 
+            # 🔒 Проверки безопасности
             if not current_path.startswith(settings.MEDIA_ROOT) or not new_path.startswith(settings.MEDIA_ROOT):
                 return JsonResponse({"error": "Некорректный путь"}, status=400)
 
@@ -151,11 +155,15 @@ def edit_directory(request, current_directory, directory):
             if os.path.exists(new_path):
                 return JsonResponse({"error": "Папка с таким именем уже существует"}, status=400)
 
+            print(f"CURRENT_PATH: {current_path}")
+            print(f"NEW_PATH: {new_path}")
+
             os.rename(current_path, new_path)
 
             return JsonResponse({"success": True, "new_name": new_name})
         except json.JSONDecodeError:
             return JsonResponse({"error": "Ошибка обработки запроса"}, status=400)
+
 
 @login_required
 @csrf_exempt

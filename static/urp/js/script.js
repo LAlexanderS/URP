@@ -22,48 +22,11 @@ function toggleUploadButton(input) {
     }
 }
 
-/** Функция переключения состояния кнопки "Создать папку" */
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("JS загружен!")
-
-    function toggleCreateButton() {
-        const createButton = document.getElementById('createButton')
-        const newDirectory = document.getElementById('new_directory')
-
-        if (!createButton) {
-            console.error("Ошибка: Кнопка 'Создать папку' не найдена!")
-            return
-        }
-        if (!newDirectory) {
-            console.error("Ошибка: Поле ввода папки 'new_directory' не найдено!")
-            return
-        }
-
-        console.log("Введено в поле папки:", newDirectory.value)
-
-        if (newDirectory.value.trim() !== '') {
-            createButton.classList.remove('btn-secondary')
-            createButton.classList.add('btn-success')
-            createButton.removeAttribute("disabled")
-        } else {
-            createButton.classList.remove('btn-success')
-            createButton.classList.add('btn-secondary')
-            createButton.setAttribute("disabled", "true")
-        }
-    }
-
-    /** Подключаем события */
-    let newDirInput = document.getElementById("new_directory")
-    if (newDirInput) {
-        newDirInput.addEventListener("input", toggleCreateButton)
-    } else {
-        console.warn("Поле ввода новой папки не найдено!")
-    }
-})
-
 function editFolder(currentName, button) {
     const folderParts = currentName.split("/")
-    const currentFolderName = folderParts[folderParts.length - 1]  // только имя папки
+    const currentFolderName = folderParts.pop() // Получаем имя папки
+    const currentDirectory = folderParts.join("/") || "" // Если корень, передаем ""
+
     const newName = prompt("Введите новое имя для папки:", currentFolderName)
 
     if (!newName || newName.trim() === "") {
@@ -71,9 +34,11 @@ function editFolder(currentName, button) {
         return
     }
 
-    const currentDirectory = new URLSearchParams(window.location.search).get("directory") || ""
+    let apiUrl = currentDirectory
+        ? `/edit_directory/${encodeURIComponent(currentDirectory)}/${encodeURIComponent(currentFolderName)}/`
+        : `/edit_directory/${encodeURIComponent(currentFolderName)}/` // 📌 Корневые папки
 
-    fetch(`/edit_directory/${encodeURIComponent(currentDirectory)}/${encodeURIComponent(currentFolderName)}/`, {
+    fetch(apiUrl, {
         method: "POST",
         headers: {
             "X-CSRFToken": getCSRFToken(),
@@ -84,7 +49,6 @@ function editFolder(currentName, button) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                button.closest("li").querySelector("a").textContent = newName
                 alert("Папка успешно переименована!")
                 location.reload()
             } else {
@@ -98,9 +62,6 @@ function getCSRFToken() {
     return document.querySelector("[name=csrfmiddlewaretoken]").value
 }
 
-function getCSRFToken() {
-    return document.querySelector("[name=csrfmiddlewaretoken]").value
-}
 
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".delete-folder").forEach(button => {

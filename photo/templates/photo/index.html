@@ -103,11 +103,11 @@
 
                     {% if user.is_authenticated %}
                         <!--"Редактировать" -->
-                        <button class="btn btn-sm btn-warning me-2"
-                            onclick="editFolder('{{ current_directory|default:'' }}/{{ directory.name }}', this)"
-                            style="border: none; background: none; padding: 0;">
-                            <img src="{% static 'icons/edit.png' %}" alt="Редактировать" style="width: 20px; height: 20px;">
-                        </button>
+                        <button class="btn btn-sm btn-warning me-2" onclick="editFolder('{{ current_directory|default:'root' }}/{{ directory.name }}', this)" style="border: none; background: none; padding: 0;">
+                        <img src="{% static 'icons/edit.png' %}" alt="Редактировать" style="width: 20px; height: 20px;">
+                    </button>
+
+
 
 
                         <!--"Удалить" -->
